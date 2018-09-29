@@ -7,6 +7,8 @@ var cons = require('consolidate')
 var index = require('./routes/index')
 const version = require('./package.json').version
 var app = express()
+const Client = require('authy-client').Client;
+const authy = new Client({key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"});
 
 var fs = require('fs');
 var account;
@@ -19,12 +21,21 @@ try {
     account = array[0];
     password = array[1];
     phoneNumber = array[2];
-console.log(account);
-console.log(password);
-console.log(phoneNumber);
 } catch(e) {
     console.log('Error:', e.stack);
 }
+
+exports.sms = function (req, res) {
+    authy.requestSms({authyId: 102974249}, {force: true}, function (err, smsRes) {
+            if (err) {
+                console.log('ERROR requestSms', err);
+                res.status(500).json(err);
+                return;
+            }
+            console.log("requestSMS response: ", smsRes);
+            res.status(200).json(smsRes);
+        });
+};
 
 require('greenlock-express').create({
     // Let's Encrypt v2 is ACME draft 11
