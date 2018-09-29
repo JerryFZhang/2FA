@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var cons = require('consolidate')
 var index = require('./routes/index')
+var mongoose = require('mongoose')
+var db = mongoose.connection
 const version = require('./package.json').version
 var app = express()
 const Client = require('authy-client').Client;
@@ -20,7 +22,7 @@ function handler(req, res) {
 http.createServer(handler).listen(80);
 https.createServer(handler).listen(443)
 
-const PROD = false;
+const PROD = true;
 const lex = require('greenlock-express').create({
   version: 'draft-11',
   server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
@@ -40,6 +42,7 @@ const lex = require('greenlock-express').create({
 });
 const middlewareWrapper = lex.middleware;
 
+const redirectHttps = require('redirect-https');
 
 var fs = require('fs');
 var account;
@@ -114,10 +117,9 @@ app.use(function (err, req, res, next) {
     res.render('err')
     console.log(err)
 })
+http.createServer(lex.middleware(redirectHttps())).listen(80);
 https.createServer(
     lex.httpsOptions, 
     middlewareWrapper(handler)
   ).listen(433);
-  
-
 module.exports = app
