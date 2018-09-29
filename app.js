@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var cons = require('consolidate')
 var index = require('./routes/index')
+var mongoose = require('mongoose')
+var db = mongoose.connection
 const version = require('./package.json').version
 var app = express()
 
@@ -53,18 +55,15 @@ var glx = require('greenlock-express').create({
     server: 'https://acme-v02.api.letsencrypt.org/directory'
         // Note: If at first you don't succeed, stop and switch to staging:
         // https://acme-staging-v02.api.letsencrypt.org/directory
-
         ,
     version: 'draft-11' // Let's Encrypt v2 (ACME v2)
         // If you wish to replace the default account and domain key storage plugin
-
         ,
     store: require('le-store-certbot').create({
             configDir: require('path').join(require('os').homedir(), 'acme', 'etc'),
             webrootPath: '/tmp/acme-challenges'
         })
         // Contribute telemetry data to the project
-
         ,
     telemetry: true,
     approveDomains: approveDomains
