@@ -1,4 +1,4 @@
-var express = require('express')
+﻿var express = require('express')
 var path = require('path')
 var logger = require('morgan')
 var cookieParser = require('cookie-parser')
@@ -7,6 +7,24 @@ var cons = require('consolidate')
 var index = require('./routes/index')
 const version = require('./package.json').version
 var app = express()
+
+var fs = require('fs');
+var account;
+var password;
+var phoneNumber;
+
+try {  
+    var data = fs.readFileSync('Account.txt', 'utf8');
+    var array = data.match(/[^\r\n]+/g);   
+    account = array[0];
+    password = array[1];
+    phoneNumber = array[2];
+console.log(account);
+console.log(password);
+console.log(phoneNumber);
+} catch(e) {
+    console.log('Error:', e.stack);
+}
 
 require('greenlock-express').create({
     // Let's Encrypt v2 is ACME draft 11
