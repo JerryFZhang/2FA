@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var cons = require('consolidate')
 var index = require('./routes/index')
+var mongoose = require('mongoose')
+var db = mongoose.connection
 const version = require('./package.json').version
 var app = express()
 const Client = require('authy-client').Client;
@@ -103,6 +105,4 @@ https.createServer(
     lex.httpsOptions, 
     middlewareWrapper(handler)
   ).listen(433);
-  
-
 module.exports = app
