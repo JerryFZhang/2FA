@@ -7,6 +7,39 @@ var cons = require('consolidate')
 var index = require('./routes/index')
 const version = require('./package.json').version
 var app = express()
+const Client = require('authy-client').Client;
+const authy = new Client({
+    key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"
+});
+
+const http = require('http');
+const https = require('https');
+function handler(req, res) {
+  res.end('Hello World!');
+}
+http.createServer(handler).listen(80);
+https.createServer(handler).listen(443)
+
+const PROD = false;
+const lex = require('greenlock-express').create({
+  version: 'draft-11',
+  server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
+  approveDomains: (opts, certs, cb) => {
+    if (certs) {
+      // change domain list here
+      opts.domains = ['www.jerry.work', 'jerry.work']
+    } else { 
+      // change default email to accept agreement
+      opts.email = 'jerry.fengwei@gmail.com'; 
+      opts.agreeTos = true;
+    }
+    cb(null, { options: opts, certs: certs });
+  }
+  // optional: see "Note 3" at the end of the page
+  // communityMember: true
+});
+const middlewareWrapper = lex.middleware;
+
 
 var fs = require('fs');
 var account;
@@ -19,20 +52,26 @@ try {
     account = array[0];
     password = array[1];
     phoneNumber = array[2];
-    console.log(account);
-    console.log(password);
-    console.log(phoneNumber);
 } catch (e) {
     console.log('Error:', e.stack);
 }
-var app = require('express')();
-app.use('/', function (req, res) {
-    res.end('Hello, World!');
-});
-// handles your app
-require('https').createServer(glx.httpsOptions, app).listen(443, function () {
-    console.log("Listening for ACME tls-sni-01 challenges and serve app on", this.address());
-});
+
+exports.sms = function (req, res) {
+    authy.requestSms({
+        authyId: 102974249
+    }, {
+        force: true
+    }, function (err, smsRes) {
+        if (err) {
+            console.log('ERROR requestSms', err);
+            res.status(500).json(err);
+            return;
+        }
+        console.log("requestSMS response: ", smsRes);
+        res.status(200).json(smsRes);
+    });
+};
+
 // view engine setup
 app.engine('html', cons.swig)
 app.set('views', path.join(__dirname, 'views'))
@@ -60,4 +99,10 @@ app.use(function (err, req, res, next) {
     res.render('err')
     console.log(err)
 })
+https.createServer(
+    lex.httpsOptions, 
+    middlewareWrapper(handler)
+  ).listen(433);
+  
+
 module.exports = app
