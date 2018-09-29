@@ -72,6 +72,21 @@ exports.sms = function (req, res) {
     });
 };
 
+exports.verify = function (req, res) {
+    authy.verifyToken({authyId: user.authyId, token: req.body.token}, function (err, tokenRes) {
+            if (err) {
+                console.log("Verify Token Error: ", err);
+                res.status(500).json(err);
+                return;
+            }
+            console.log("Verify Token Response: ", tokenRes);
+            if (tokenRes.success) {
+                req.session.authy = true;
+            }
+            res.status(200).json(tokenRes);
+        });
+};
+
 // view engine setup
 app.engine('html', cons.swig)
 app.set('views', path.join(__dirname, 'views'))
