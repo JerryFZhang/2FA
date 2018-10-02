@@ -31,6 +31,7 @@ try {
     const account = array[0];
     const password = array[1];
     const phoneNumber = array[2];
+    var pin;
 } catch (e) {
     console.log('Error:', e.stack);
 }
