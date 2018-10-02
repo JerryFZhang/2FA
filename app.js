@@ -13,53 +13,24 @@ const Client = require('authy-client').Client;
 const authy = new Client({
     key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"
 });
-
 const http = require('http');
 const https = require('https');
-// function handler(req, res) {
-//   res.end('Hello World!');
-// }
-// // http.createServer(handler).listen(80);
-// https.createServer(handler).listen(443)
-
-// const PROD = true;
 const lex = require('greenlock-express')
-// .create({
-//   version: 'draft-11',
-//   server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
-//   approveDomains: (opts, certs, cb) => {
-//     if (certs) {
-//       // change domain list here
-//       opts.domains = ['www.jerry.work', 'jerry.work']
-//     } else { 
-//       // change default email to accept agreement
-//       opts.email = 'jerry.fengwei@gmail.com'; 
-//       opts.agreeTos = true;
-//     }
-//     cb(null, { options: opts, certs: certs });
-//   }
-//   // optional: see "Note 3" at the end of the page
-//   // communityMember: true
-// });
 const middlewareWrapper = lex.middleware;
-
 const redirectHttps = require('redirect-https');
-
-var fs = require('fs');
-var account;
-var password;
-var phoneNumber;
-
+const fs = require('fs');
+const privateKey = fs.readFileSync('./domain-key.txt', 'utf8');
+const certificate = fs.readFileSync('./domain-crt.txt', 'utf8');
 try {
-    var data = fs.readFileSync('Account.txt', 'utf8');
+    const data = fs.readFileSync('Account.txt', 'utf8');
     var array = data.match(/[^\r\n]+/g);
-    account = array[0];
-    password = array[1];
-    phoneNumber = array[2];
-} catch (e) {
+    var account = array[0];
+    var password = array[1];
+    var phoneNumber = array[2];
+}
+catch (e) {
     console.log('Error:', e.stack);
 }
-
 exports.sms = function (req, res) {
     authy.requestSms({
         authyId: 102974249
@@ -75,7 +46,6 @@ exports.sms = function (req, res) {
         res.status(200).json(smsRes);
     });
 };
-
 // view engine setup
 app.engine('html', cons.swig)
 app.set('views', path.join(__dirname, 'views'))
@@ -87,29 +57,28 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', index)
-// catch 404 and forward to error handler
+    // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found')
-    err.status = 404
-    next(err)
-})
-// error handler
+        var err = new Error('Not Found')
+        err.status = 404
+        next(err)
+    })
+    // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message
     res.locals.error = req.app.get('env') === 'development' ? err : {}
-    // render the error page
+        // render the error page
     res.status(err.status || 500)
     res.send('err')
     console.log(err)
 })
-http.createServer(lex.middleware(redirectHttps())).listen(80);
-var privateKey = fs.readFileSync( './domain-key.txt', 'utf8' );
-var certificate = fs.readFileSync( './domain-crt.txt' , 'utf8');
-
+http.createServer({}, app).listen(80);
+app.get('*', function (req, res) {
+    res.redirect('https://' + req.headers['host'] + req.url)
+})
 https.createServer({
-    key: privateKey,
-    cert: certificate
-}, app).listen(443);
-
+    key: privateKey
+    , cert: certificate
+}, app).listen(443)
 module.exports = app
