@@ -55,15 +55,14 @@ router.post('/token', (req, res) => {
                 console.log(err)
             }
             if (err || !user) {
-                res.send('incorrect password')
+                res.send('Username does not exist')
             } else {
-                var token = grantAccess(user)
-                console.log(user)
-                res.cookie('auth', token).json({
+                res.cookie('auth', username).json({
                     success: true,
                     message: 'loginSuccess',
-                    token: token
+                    username: username
                 })
+                res.redirect("auth")
             }
         })
     } else {
