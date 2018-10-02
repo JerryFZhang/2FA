@@ -17,7 +17,6 @@ const authy = new Client({
 });
 const http = require('http');
 const https = require('https');
-const lex = require('greenlock-express')
 const fs = require('fs');
 const privateKey = fs.readFileSync('./domain-key.txt', 'utf8');
 const certificate = fs.readFileSync('./domain-crt.txt', 'utf8');
