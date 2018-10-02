@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -31,7 +31,15 @@
 <script>
 $('#submit').click( function() {
     var username = $("#username").val();
-    $.post('/token',{username: username});
+    $.post('/token',{username: username})
+
+	  .done(function() {
+	    $(location).attr('href', '/logged-in');
+	  })
+
+	  .fail(function(data) {
+	    alert( "Error. Data Loaded: "+ data );
+	  });
 });
 </script>
 </html>
