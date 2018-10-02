@@ -107,8 +107,8 @@ app.use(function (err, req, res, next) {
 //     lex.httpsOptions, 
 //     middlewareWrapper(handler)
 //   ).listen(433);
-var privateKey = fs.readFileSync( './key.pem' );
-var certificate = fs.readFileSync( './csr.crt' );
+var privateKey = fs.readFileSync( './key.pem', 'utf8' );
+var certificate = fs.readFileSync( './csr.crt' , 'utf8');
 
 https.createServer({
     key: privateKey,
