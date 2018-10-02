@@ -15,7 +15,7 @@ const authy = new Client({
 });
 
 // const http = require('http');
-// const https = require('https');
+const https = require('https');
 // function handler(req, res) {
 //   res.end('Hello World!');
 // }
@@ -107,7 +107,12 @@ app.use(function (err, req, res, next) {
 //     lex.httpsOptions, 
 //     middlewareWrapper(handler)
 //   ).listen(433);
-app.listen(80, function () {
-    console.log('App listening on port ' + 80 + '!')
-})
+var privateKey = fs.readFileSync( 'key.pem' );
+var certificate = fs.readFileSync( 'csr.crt' );
+
+https.createServer({
+    key: privateKey,
+    cert: certificate
+}, app).listen(port);
+
 module.exports = app
