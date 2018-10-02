@@ -49,6 +49,30 @@ exports.sms = function (req, res) {
         res.status(200).json(smsRes);
     });
 };
+
+exports.verify = function (req, res) {
+    var username = req.session.username;
+    User.findOne({username: username}).exec(function (err, user) {
+        console.log("Verify Token");
+        if (err) {
+            console.error('Verify Token User Error: ', err);
+            res.status(500).json(err);
+        }
+        authy.verifyToken({authyId: user.authyId, token: req.body.token}, function (err, tokenRes) {
+            if (err) {
+                console.log("Verify Token Error: ", err);
+                res.status(500).json(err);
+                return;
+            }
+            console.log("Verify Token Response: ", tokenRes);
+            if (tokenRes.success) {
+                req.session.authy = true;
+            }
+            res.status(200).json(tokenRes);
+        });
+    });
+};
+
 // view engine setup
 app.engine('html', cons.swig)
 app.set('views', path.join(__dirname, 'views'))
