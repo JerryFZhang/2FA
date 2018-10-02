@@ -26,15 +26,12 @@
         var username = $("#username").val();
         $.post('/token', {
             username: username
-        }).done(function(res) {
-            if (res.success == true) {
-                window.location.replace("https://" + window.location.hostname + "/auth");
-            } else {
-                $("div.error").append(res);
-            }
+        }).done(function() {
+            $(location).attr('href', '/logged-in');
+        }).fail(function(data) {
+            alert("Error. Data Loaded: " + data);
         });
     });
-
 </script>
 
 </html>
