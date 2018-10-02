@@ -49,22 +49,13 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/token', (req, res) => {
-    console.log(req)
-
     if (req.body.username) {
-        User.sms(lowerCase(req.body.username), (err, user) => {
+        User.sms(lowerCase(req.body.username), (err, cb) => {
             if (err) {
-                console.log(err)
-            }
-            if (err || !user) {
-                res.send('Username does not exist')
+                res.send(err)
+
             } else {
-                res.cookie('auth', username).json({
-                    success: true,
-                    message: 'loginSuccess',
-                    username: username
-                })
-                res.redirect("auth")
+                res.send(cb)
             }
         })
     } else {
@@ -73,23 +64,17 @@ router.post('/token', (req, res) => {
 })
 
 router.post('/verify', (req, res) => {
-    console.log("in verify")
     if (req.body.username && req.body.password) {
-    console.log("username pass word exists")
-        User.verify(req.body.token, req.body.password, lowerCase(req.body.username), (err, user) => {
-
+        console.log("username pass word exists")
+        User.verify(req.body.token, req.body.password, lowerCase(req.body.username), (err, cb) => {
             if (err) {
                 console.log(err)
             }
-            if (err || !user) {
-                res.send('incorrect password')
+            if (cb == true) {
+                res.send('success').status(200)
             } else {
-                var token = grantAccess(user)
-                res.cookie('auth', token).json({
-                    success: true,
-                    message: 'loginSuccess',
-                    token: token
-                })
+                res.send('login failed')
+                console.log(cb)
             }
         })
     } else {
@@ -102,11 +87,15 @@ router.post('/reset', (req, res) => {
     var token = req.query.token
     if (req.body.password) {
         User.resetPassword(req.query.username, req.body.password, (err) => {
-            // console.log("err")
             if (err) {
+                res.send(err)
                 console.log(err)
+            }
+            if (cb == true) {
+                res.send('success').status(200)
             } else {
-                res.send('reset password success')
+                res.send(err)
+                console.log(err)
             }
         })
     } else {
