@@ -31,8 +31,23 @@
             password: password,
             token: token,
             username: "123"
-        }).done(function() {
-            alert("done")
+        }).done(function(password, token) {
+            var checkPassword = $.parseJSON(password);
+            var checkToken = $.parseJSON(token);
+
+            if(password != checkPassword){
+                <div class="alert alert-warning">
+                    <strong>Warning!</strong> Invalid Password.
+                    </div>
+            }
+            else if(token != checkToken){
+                <div class="alert alert-warning">
+                    <strong>Warning!</strong> Invalid Token.
+                    </div>
+            }
+            else{
+                $(location).attr('href', 'logged-in.ejs')
+            }
         })
     });
 
