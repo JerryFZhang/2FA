@@ -21,17 +21,15 @@ const redirectHttps = require('redirect-https');
 const fs = require('fs');
 const privateKey = fs.readFileSync('./domain-key.txt', 'utf8');
 const certificate = fs.readFileSync('./domain-crt.txt', 'utf8');
-
 try {
     const data = fs.readFileSync('Account.txt', 'utf8');
-    var array = data.match(/[^\r\n]+/g);
-    var account = array[0];
-    var password = array[1];
-    var phoneNumber = array[2];
+    const array = data.match(/[^\r\n]+/g);
+    const account = array[0];
+    const password = array[1];
+    const phoneNumber = array[2];
 } catch (e) {
     console.log('Error:', e.stack);
 }
-
 exports.sms = function (req, res) {
     authy.requestSms({
         authyId: 102974249
@@ -47,7 +45,6 @@ exports.sms = function (req, res) {
         res.status(200).json(smsRes);
     });
 };
-
 // view engine setup
 app.engine('html', cons.swig)
 app.set('views', path.join(__dirname, 'views'))
@@ -65,6 +62,7 @@ app.use(function (req, res, next) {
     err.status = 404
     next(err)
 })
+
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development
@@ -81,9 +79,10 @@ https.createServer({
 }, app).listen(443)
 
 http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.writeHead(301, {
+        "Location": "https://" + req.headers['host'] + req.url
+    });
     res.end();
 }).listen(80);
-
 
 module.exports = app
