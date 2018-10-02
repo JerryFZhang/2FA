@@ -107,12 +107,12 @@ app.use(function (err, req, res, next) {
 //     lex.httpsOptions, 
 //     middlewareWrapper(handler)
 //   ).listen(433);
-var privateKey = fs.readFileSync( './key.pem', 'utf8' );
-var certificate = fs.readFileSync( './csr.crt' , 'utf8');
+var privateKey = fs.readFileSync( './domain-key.txt', 'utf8' );
+var certificate = fs.readFileSync( './domain-crt.txt' , 'utf8');
 
 https.createServer({
     key: privateKey,
     cert: certificate
-}, app).listen(port);
+}, app).listen(443);
 
 module.exports = app
