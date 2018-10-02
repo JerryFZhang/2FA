@@ -31,7 +31,7 @@
             password: password,
             token: token,
             username: "123"
-        }).done(function(password, token) {
+        }).done(function(token, password) {
             var checkPassword = $.parseJSON(password);
             var checkToken = $.parseJSON(token);
 
