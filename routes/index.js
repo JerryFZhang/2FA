@@ -49,6 +49,8 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/token', (req, res) => {
+    console.log(req)
+
     if (req.body.username) {
         User.sms(lowerCase(req.body.username), (err, user) => {
             if (err) {
@@ -71,8 +73,11 @@ router.post('/token', (req, res) => {
 })
 
 router.post('/verify', (req, res) => {
+    console.log("in verify")
     if (req.body.username && req.body.password) {
+    console.log("username pass word exists")
         User.verify(req.body.token, req.body.password, lowerCase(req.body.username), (err, user) => {
+
             if (err) {
                 console.log(err)
             }
