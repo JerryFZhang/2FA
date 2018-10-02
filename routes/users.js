@@ -1,41 +1,39 @@
-const express = require('express')
-const router = express.Router()
-const multer = require('multer')
-const User = require('../models/User.js')
-const _ = require('lodash')
-const fs = require('fs')
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, serverConfig.uploadPath)
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname)
-  }
-})
 
-router.get('/', function (req, res, next) {
-  var query = {}
-  if (req.query.userId) {
-    query.userId = req.query.userId
-    User.findOne(query, 'email userId', (err, user) => {
-      if (err) {
-        console.log('find user error ', err)
-        res.status(500).send('unable to find user')
-      } else {
-        res.send(user)
-      }
-    })
-  } else {
-    User.find('email userId', (err, users) => {
-      if (err) {
-        console.log('find user error ', err)
-        res.status(500).send('unable to find user')
-      } else {
-        res.send(users)
-      }
-    })
-  }
-})
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, serverConfig.uploadPath)
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.fieldname)
+//   }
+// })
+// console.log("User initiated")
+// router.post('/', function (req, res, next) {
+//   var query = {}
+//   console.log(req.query)
+//   console.log("reqbody")
+//   res.send(123)
+//   if (req.query.userName) {
+//     query.userName = req.query.userName
+//     User.findOne(query, 'userId userName', (err, user) => {
+//       if (err) {
+//         console.log('find user error ', err)
+//         res.status(500).send('unable to find user')
+//       } else {
+//         res.send(user)
+//       }
+//     })
+//   } else {
+//     User.find('userId userName', (err, users) => {
+//       if (err) {
+//         console.log('find user error ', err)
+//         res.status(500).send('unable to find user')
+//       } else {
+//         res.send(users)
+//       }
+//     })
+//   }
+// })
 
 // // update
 // router.put('/', function (req, res, next) {
@@ -58,8 +56,8 @@ router.get('/', function (req, res, next) {
 //   })
 // })
 
-// logout
-router.get('/logout', function (req, res, next) {
-  res.clearCookie('auth').send('logout success')
-})
-module.exports = router
+// // logout
+// router.get('/logout', function (req, res, next) {
+//   res.clearCookie('auth').send('logout success')
+// })
+// module.exports = router

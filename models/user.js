@@ -9,11 +9,6 @@ var UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    userId: {
-        type: String,
-        unique: true,
-        trim: true
-    },
     password: {
         type: String,
         required: true
@@ -22,9 +17,9 @@ var UserSchema = new mongoose.Schema({
 })
 
 // authenticate input against database
-UserSchema.statics.authenticate = function (email, password, callback) {
+UserSchema.statics.authenticate = function (userName, password, callback) {
     User.findOne({
-        email: email,
+        userName: userName,
     }, function (err, user) {
         if (err) {
             return callback(err)
@@ -34,36 +29,47 @@ UserSchema.statics.authenticate = function (email, password, callback) {
             return callback(err)
         }
         bcrypt.compare(password, user.password, function (err, result) {
+            console.log(password)
+            console.log(user.password)
+            console.log(result)
+
             if (err) {
                 return callback(err)
+                console.log("noooo")
             }
             if (result === true) {
+                console.log("yay")
                 return callback(null, user)
             } else {
+                console.log("ayyayays")
                 return callback()
             }
         })
     })
 }
 
-// UserSchema.post('findOneAndUpdate', function (doc) {
-//     User.update({
-//         _id: mongoose.Types.ObjectId(doc.userId)
-//     }, {
-//         updatedAt: Date.now()
-//     }, (err, user) => {
-//         if (err) {
-//             console.log(err)
-//         }
-//     })
-// })
+UserSchema.statics.resetPassword = function (userName, password, callback) {
+    bcrypt.hash(password, 10, function (err, hash) {
+      if (err) {
+        console.log(err)
+      }
+    //   User.update({verifyToken: verifyToken}, {password: hash.toString()}, (err, successNum) => {
+      User.update({userName: userName}, {password: hash.toString()}, (err, successNum) => {
+
+        if (err) {
+          console.log(err)
+          callback(err)
+        }
+        callback()
+      })
+    })
+  }
 
 // hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
     var user = this
     var id = new mongoose.mongo.ObjectId()
     user._id = id
-    user.userId = id
     bcrypt.hash(user.password, 10, function (err, hash) {
         if (err) {
             return next(err)
@@ -73,5 +79,5 @@ UserSchema.pre('save', function (next) {
     })
 })
 
-const User = mongoose.model('User', UserSchema)
+const User = mongoose.model('user', UserSchema)
 module.exports = User

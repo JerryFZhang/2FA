@@ -3,6 +3,14 @@ const router = express.Router()
 // const request = require('request')
 const version = require('../package.json').version
 const request = require('request')
+const multer = require('multer')
+const User = require('../models/User.js')
+const _ = require('lodash')
+const lowerCase = require('lower-case')
+const fs = require('fs')
+
+var jwt = require('jsonwebtoken')
+var jwtSecret = 'bsud!32*(SAHGxna1)'
 // START OF HOMEPAGE
 router.get('/', function (req, res, next) {
     res.render('login')
@@ -13,4 +21,62 @@ router.get('/auth', function (req, res, next) {
 router.get('/logged-in', function (req, res, next) {
     res.render('logged-in')
 })
+// router.get('/users/', function (req, res, next) {
+//     res.send('user')
+// })
+
+router.post('/login', (req, res) => {
+    if (req.body.userName && req.body.password) {
+        User.authenticate(lowerCase(req.body.userName), req.body.password, (err, user) => {
+            if (err) {
+                console.log(err)
+            }
+            if (err || !user) {
+                res.send('incorrect password')
+            } else {
+                var token = grantAccess(user)
+                res.cookie('auth', token).json({
+                    success: true,
+                    message: 'loginSuccess',
+                    token: token
+                })
+            }
+        })
+    } else {
+        res.send('login failed, domain not fund')
+    }
+})
+
+router.post('/reset', (req, res) => {
+    console.log(req.body)
+    var token = req.query.token
+    if (req.body.password) {
+        User.resetPassword(req.body.userName, req.body.password, (err) => {
+            console.log("err")
+            if (err) {
+                console.log(err)
+            } else {
+                res.send('reset password success')
+            }
+        })
+    } else {
+        res.status(404)
+    }
+})
+
+// logout
+router.get('/logout', function (req, res, next) {
+    res.clearCookie('auth').send('logout success')
+})
+
+function grantAccess(user) {
+    const payload = {
+        userName: user.email,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
+    }
+    var token = jwt.sign(payload, jwtSecret)
+    return token
+}
+
+
 module.exports = router

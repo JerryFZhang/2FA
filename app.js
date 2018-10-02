@@ -5,10 +5,14 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const cons = require('consolidate')
 const index = require('./routes/index')
-const users = require('./routes/users')
 
+var serverConfig = require('./config.js').serverConfig
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017',{ useNewUrlParser: true })
+mongoose.Promise = global.Promise
+mongoose.connect(serverConfig.dbAddress,{ useNewUrlParser: true })
+  .then(() => console.log('DB connected'))
+  .catch((err) => console.error(err))
+
 const db = mongoose.connection
 const app = express()
 const Client = require('authy-client').Client;
@@ -56,6 +60,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', index)
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     const err = new Error('Not Found')
@@ -73,16 +78,21 @@ app.use(function (err, req, res, next) {
     res.send('err')
     console.log(err)
 })
-https.createServer({
-    key: privateKey,
-    cert: certificate
-}, app).listen(443)
+// https.createServer({
+//     key: privateKey,
+//     cert: certificate
+// }, app).listen(443)
 
-http.createServer(function (req, res) {
-    res.writeHead(301, {
-        "Location": "https://" + req.headers['host'] + req.url
-    });
-    res.end();
-}).listen(80);
+
+app.listen('3001', function () {
+    console.log('App listening on port ' + 3001 + '!')
+})
+
+// http.createServer(function (req, res) {
+    // res.writeHead(301, {
+    //     "Location": "https://" + req.headers['host'] + req.url
+    // });
+    // res.end();
+// }).listen(80);
 
 module.exports = app
