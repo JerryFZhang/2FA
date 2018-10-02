@@ -1,14 +1,16 @@
-﻿var express = require('express')
-var path = require('path')
-var logger = require('morgan')
-var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
-var cons = require('consolidate')
-var index = require('./routes/index')
-var mongoose = require('mongoose')
-var db = mongoose.connection
-const version = require('./package.json').version
-var app = express()
+﻿const express = require('express')
+const path = require('path')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const cons = require('consolidate')
+const index = require('./routes/index')
+const users = require('./routes/users')
+
+const mongoose = require('mongoose')
+mongoose.connect('mongodb://localhost:27017',{ useNewUrlParser: true })
+const db = mongoose.connection
+const app = express()
 const Client = require('authy-client').Client;
 const authy = new Client({
     key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"
@@ -16,11 +18,10 @@ const authy = new Client({
 const http = require('http');
 const https = require('https');
 const lex = require('greenlock-express')
-const middlewareWrapper = lex.middleware;
-const redirectHttps = require('redirect-https');
 const fs = require('fs');
 const privateKey = fs.readFileSync('./domain-key.txt', 'utf8');
 const certificate = fs.readFileSync('./domain-crt.txt', 'utf8');
+
 try {
     const data = fs.readFileSync('Account.txt', 'utf8');
     const array = data.match(/[^\r\n]+/g);
@@ -58,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', index)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found')
+    const err = new Error('Not Found')
     err.status = 404
     next(err)
 })
