@@ -14,35 +14,35 @@ const authy = new Client({
     key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"
 });
 
-const http = require('http');
-const https = require('https');
-function handler(req, res) {
-  res.end('Hello World!');
-}
-http.createServer(handler).listen(80);
-https.createServer(handler).listen(443)
+// const http = require('http');
+// const https = require('https');
+// function handler(req, res) {
+//   res.end('Hello World!');
+// }
+// // http.createServer(handler).listen(80);
+// https.createServer(handler).listen(443)
 
-const PROD = true;
-const lex = require('greenlock-express').create({
-  version: 'draft-11',
-  server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
-  approveDomains: (opts, certs, cb) => {
-    if (certs) {
-      // change domain list here
-      opts.domains = ['www.jerry.work', 'jerry.work']
-    } else { 
-      // change default email to accept agreement
-      opts.email = 'jerry.fengwei@gmail.com'; 
-      opts.agreeTos = true;
-    }
-    cb(null, { options: opts, certs: certs });
-  }
-  // optional: see "Note 3" at the end of the page
-  // communityMember: true
-});
-const middlewareWrapper = lex.middleware;
+// const PROD = true;
+// const lex = require('greenlock-express').create({
+//   version: 'draft-11',
+//   server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
+//   approveDomains: (opts, certs, cb) => {
+//     if (certs) {
+//       // change domain list here
+//       opts.domains = ['www.jerry.work', 'jerry.work']
+//     } else { 
+//       // change default email to accept agreement
+//       opts.email = 'jerry.fengwei@gmail.com'; 
+//       opts.agreeTos = true;
+//     }
+//     cb(null, { options: opts, certs: certs });
+//   }
+//   // optional: see "Note 3" at the end of the page
+//   // communityMember: true
+// });
+// const middlewareWrapper = lex.middleware;
 
-const redirectHttps = require('redirect-https');
+// const redirectHttps = require('redirect-https');
 
 var fs = require('fs');
 var account;
@@ -102,9 +102,9 @@ app.use(function (err, req, res, next) {
     res.render('err')
     console.log(err)
 })
-http.createServer(lex.middleware(redirectHttps())).listen(80);
-https.createServer(
-    lex.httpsOptions, 
-    middlewareWrapper(handler)
-  ).listen(433);
+// http.createServer(lex.middleware(redirectHttps())).listen(80);
+// https.createServer(
+//     lex.httpsOptions, 
+//     middlewareWrapper(handler)
+//   ).listen(433);
 module.exports = app
