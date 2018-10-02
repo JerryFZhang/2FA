@@ -14,7 +14,7 @@ const authy = new Client({
     key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"
 });
 
-// const http = require('http');
+const http = require('http');
 const https = require('https');
 // function handler(req, res) {
 //   res.end('Hello World!');
@@ -23,7 +23,8 @@ const https = require('https');
 // https.createServer(handler).listen(443)
 
 // const PROD = true;
-// const lex = require('greenlock-express').create({
+const lex = require('greenlock-express')
+// .create({
 //   version: 'draft-11',
 //   server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
 //   approveDomains: (opts, certs, cb) => {
@@ -42,7 +43,7 @@ const https = require('https');
 // });
 // const middlewareWrapper = lex.middleware;
 
-// const redirectHttps = require('redirect-https');
+const redirectHttps = require('redirect-https');
 
 var fs = require('fs');
 var account;
@@ -102,11 +103,7 @@ app.use(function (err, req, res, next) {
     res.send('err')
     console.log(err)
 })
-// http.createServer(lex.middleware(redirectHttps())).listen(80);
-// https.createServer(
-//     lex.httpsOptions, 
-//     middlewareWrapper(handler)
-//   ).listen(433);
+http.createServer(lex.middleware(redirectHttps())).listen(80);
 var privateKey = fs.readFileSync( './domain-key.txt', 'utf8' );
 var certificate = fs.readFileSync( './domain-crt.txt' , 'utf8');
 
