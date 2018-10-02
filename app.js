@@ -41,7 +41,7 @@ const lex = require('greenlock-express')
 //   // optional: see "Note 3" at the end of the page
 //   // communityMember: true
 // });
-// const middlewareWrapper = lex.middleware;
+const middlewareWrapper = lex.middleware;
 
 const redirectHttps = require('redirect-https');
 
