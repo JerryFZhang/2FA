@@ -107,4 +107,7 @@ app.use(function (err, req, res, next) {
 //     lex.httpsOptions, 
 //     middlewareWrapper(handler)
 //   ).listen(433);
+app.listen(80, function () {
+    console.log('App listening on port ' + 80 + '!')
+})
 module.exports = app
