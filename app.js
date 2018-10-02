@@ -25,31 +25,6 @@ const fs = require('fs');
 const privateKey = fs.readFileSync('./domain-key.txt', 'utf8');
 const certificate = fs.readFileSync('./domain-crt.txt', 'utf8');
 
-try {
-    const data = fs.readFileSync('Account.txt', 'utf8');
-    const array = data.match(/[^\r\n]+/g);
-    const account = array[0];
-    const password = array[1];
-    const phoneNumber = array[2];
-    var pin;
-} catch (e) {
-    console.log('Error:', e.stack);
-}
-exports.sms = function (req, res) {
-    authy.requestSms({
-        authyId: 102974249
-    }, {
-        force: true
-    }, function (err, smsRes) {
-        if (err) {
-            console.log('ERROR requestSms', err);
-            res.status(500).json(err);
-            return;
-        }
-        console.log("requestSMS response: ", smsRes);
-        res.status(200).json(smsRes);
-    });
-};
 // view engine setup
 app.engine('html', cons.swig)
 app.set('views', path.join(__dirname, 'views'))
