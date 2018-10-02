@@ -74,6 +74,7 @@ UserSchema.statics.verify = function (token, password, username, callback) {
         username: username
     }).exec(function (err, user) {
         console.log("Verify Token");
+        console.log(user)
         if (err) {
             console.error('Verify Token User Error: ', err);
             res.status(500).json(err);
