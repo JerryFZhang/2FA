@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 // const request = require('request')
 const version = require('../package.json').version
+
 const request = require('request')
 const multer = require('multer')
 const User = require('../models/User.js')
@@ -26,8 +27,8 @@ router.get('/logged-in', function (req, res, next) {
 // })
 
 router.post('/login', (req, res) => {
-    if (req.body.userName && req.body.password) {
-        User.authenticate(lowerCase(req.body.userName), req.body.password, (err, user) => {
+    if (req.body.username && req.body.password) {
+        User.authenticate(lowerCase(req.body.username), req.body.password, (err, user) => {
             if (err) {
                 console.log(err)
             }
@@ -43,7 +44,52 @@ router.post('/login', (req, res) => {
             }
         })
     } else {
-        res.send('login failed, domain not fund')
+        res.send('login failed')
+    }
+})
+
+router.post('/token', (req, res) => {
+    if (req.body.username) {
+        User.sms(lowerCase(req.body.username), (err, user) => {
+            if (err) {
+                console.log(err)
+            }
+            if (err || !user) {
+                res.send('incorrect password')
+            } else {
+                var token = grantAccess(user)
+                console.log(user)
+                res.cookie('auth', token).json({
+                    success: true,
+                    message: 'loginSuccess',
+                    token: token
+                })
+            }
+        })
+    } else {
+        res.send('login failed')
+    }
+})
+
+router.post('/verify', (req, res) => {
+    if (req.body.username && req.body.password) {
+        User.verify(req.body.token, req.body.password, lowerCase(req.body.username), (err, user) => {
+            if (err) {
+                console.log(err)
+            }
+            if (err || !user) {
+                res.send('incorrect password')
+            } else {
+                var token = grantAccess(user)
+                res.cookie('auth', token).json({
+                    success: true,
+                    message: 'loginSuccess',
+                    token: token
+                })
+            }
+        })
+    } else {
+        res.send('login failed')
     }
 })
 
@@ -51,8 +97,25 @@ router.post('/reset', (req, res) => {
     console.log(req.body)
     var token = req.query.token
     if (req.body.password) {
-        User.resetPassword(req.body.userName, req.body.password, (err) => {
-            console.log("err")
+        User.resetPassword(req.query.username, req.body.password, (err) => {
+            // console.log("err")
+            if (err) {
+                console.log(err)
+            } else {
+                res.send('reset password success')
+            }
+        })
+    } else {
+        res.status(404)
+    }
+})
+
+router.post('/sms', (req, res) => {
+    console.log(req.body)
+    var token = req.query.token
+    if (req.body.username) {
+        User.sendAuthyToken(req.query.username, (err) => {
+            // console.log("err")
             if (err) {
                 console.log(err)
             } else {
@@ -71,7 +134,7 @@ router.get('/logout', function (req, res, next) {
 
 function grantAccess(user) {
     const payload = {
-        userName: user.email,
+        username: user.email,
         exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
     }
     var token = jwt.sign(payload, jwtSecret)
