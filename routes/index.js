@@ -22,9 +22,7 @@ router.get('/auth', function (req, res, next) {
 router.get('/logged-in', function (req, res, next) {
     res.render('logged-in')
 })
-// router.get('/users/', function (req, res, next) {
-//     res.send('user')
-// })
+// router.get('/users/', function (req, res, next) {     res.send('user') })
 
 router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {
@@ -36,11 +34,9 @@ router.post('/login', (req, res) => {
                 res.send('incorrect password')
             } else {
                 var token = grantAccess(user)
-                res.cookie('auth', token).json({
-                    success: true,
-                    message: 'loginSuccess',
-                    token: token
-                })
+                res
+                    .cookie('auth', token)
+                    .json({success: true, message: 'loginSuccess', token: token})
             }
         })
     } else {
@@ -71,7 +67,9 @@ router.post('/verify', (req, res) => {
                 console.log(err)
             }
             if (cb == true) {
-                res.send('success').status(200)
+                res
+                    .send('success')
+                    .status(200)
             } else {
                 res.send('login failed')
                 console.log(cb)
@@ -92,7 +90,9 @@ router.post('/reset', (req, res) => {
                 console.log(err)
             }
             if (cb == true) {
-                res.send('success').status(200)
+                res
+                    .send('success')
+                    .status(200)
             } else {
                 res.send(err)
                 console.log(err)
@@ -122,7 +122,9 @@ router.post('/sms', (req, res) => {
 
 // logout
 router.get('/logout', function (req, res, next) {
-    res.clearCookie('auth').send('logout success')
+    res
+        .clearCookie('auth')
+        .send('logout success')
 })
 
 function grantAccess(user) {
@@ -133,6 +135,5 @@ function grantAccess(user) {
     var token = jwt.sign(payload, jwtSecret)
     return token
 }
-
 
 module.exports = router
