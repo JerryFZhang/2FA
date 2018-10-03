@@ -53,7 +53,7 @@ UserSchema.statics.verify = function (token, password, username, callback) {
                 return callback(err)
             }
             console.log("Verify Token Response: ", tokenRes);
-            if (tokenRes.success ==true) {
+            if (tokenRes.success == true) {
                 req.session.authy = true;
                 return callback(true)
             }
@@ -79,7 +79,7 @@ UserSchema.statics.sms = function (username, callback) {
                 return err
             }
             console.log("requestSMS response: ", smsRes);
-            if (smsRes.success == true)return true
+            if (smsRes.success == true) return true
         });
         return false
     });
