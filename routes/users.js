@@ -1,6 +1,5 @@
 var User = require('../models/User.js')
 const router = express.Router()
-
 router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {
         User.authenticate(lowerCase(req.body.username), req.body.password, (err, user) => {
@@ -11,22 +10,22 @@ router.post('/login', (req, res) => {
                 res.send('incorrect password')
             } else {
                 var token = grantAccess(user)
-                res
-                    .cookie('auth', token)
-                    .json({success: true, message: 'loginSuccess', token: token})
+                res.cookie('auth', token).json({
+                    success: true,
+                    message: 'loginSuccess',
+                    token: token
+                })
             }
         })
     } else {
         res.send('login failed')
     }
 })
-
 router.post('/token', (req, res) => {
     if (req.body.username) {
         User.sms(lowerCase(req.body.username), (err, cb) => {
             if (err) {
                 res.send(err)
-
             } else {
                 res.send(cb)
             }
@@ -35,7 +34,6 @@ router.post('/token', (req, res) => {
         res.send('login failed')
     }
 })
-
 router.post('/verify', (req, res) => {
     if (req.body.username && req.body.password) {
         console.log("username pass word exists")
@@ -44,9 +42,7 @@ router.post('/verify', (req, res) => {
                 console.log(err)
             }
             if (cb == true) {
-                res
-                    .send('success')
-                    .status(200)
+                res.send('success').status(200)
             } else {
                 res.send('login failed')
                 console.log(cb)
@@ -56,7 +52,6 @@ router.post('/verify', (req, res) => {
         res.send('login failed')
     }
 })
-
 router.post('/reset', (req, res) => {
     console.log(req.body)
     var token = req.query.token
@@ -67,9 +62,7 @@ router.post('/reset', (req, res) => {
                 console.log(err)
             }
             if (cb == true) {
-                res
-                    .send('success')
-                    .status(200)
+                res.send('success').status(200)
             } else {
                 res.send(err)
                 console.log(err)
@@ -79,7 +72,6 @@ router.post('/reset', (req, res) => {
         res.status(404)
     }
 })
-
 router.post('/sms', (req, res) => {
     console.log(req.body)
     var token = req.query.token
@@ -96,12 +88,9 @@ router.post('/sms', (req, res) => {
         res.status(404)
     }
 })
-
 // logout
 router.get('/logout', function (req, res, next) {
-    res
-        .clearCookie('auth')
-        .send('logout success')
+    res.clearCookie('auth').send('logout success')
 })
 
 function grantAccess(user) {

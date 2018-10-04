@@ -34,7 +34,6 @@ var UserSchema = new mongoose.Schema({
         default: false,
     }
 })
-
 UserSchema.statics.verify = function (token, password, username, callback) {
     User.findOne({
         username: "123"
@@ -84,7 +83,6 @@ UserSchema.statics.sms = function (username, callback) {
         return false
     });
 };
-
 UserSchema.statics.resetPassword = function (username, password, callback) {
     bcrypt.hash(password, 10, function (err, hash) {
         if (err) {
@@ -119,6 +117,5 @@ UserSchema.pre('save', function (next) {
         next()
     })
 })
-
 const User = mongoose.model('user', UserSchema)
 module.exports = User
