@@ -37,10 +37,10 @@
                $(location).attr('href', '/logged-in');
             }
             else{
-                $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>');
+                $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data.message) + '</strong>.</div>');
             }
         }).fail(function (data) {
-            $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>');
+            $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data.message) + '</strong>.</div>');
         })
     });
 </script>
