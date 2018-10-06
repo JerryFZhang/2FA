@@ -32,8 +32,13 @@
             password: password
             , token: token
             , username: "123"
-        }).done(function () {
-            $(location).attr('href', '/logged-in');
+        }).done(function (data) {
+            if(data.verified){
+               $(location).attr('href', '/logged-in');
+            }
+            else{
+                $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>');
+            }
         }).fail(function (data) {
             $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>');
         })
