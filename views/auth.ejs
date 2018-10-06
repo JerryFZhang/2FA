@@ -35,7 +35,9 @@
             $(location).attr('href', 'logged-in.ejs');
         })
         .fail(function(data) {
-            alert("Error: " + JSON.stringify(data));
+            <div class="alert alert-warning">
+  <strong>Error:</strong> + JSON.stringify(data)
+   </div>
         })
     });
 
