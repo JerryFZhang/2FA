@@ -1,5 +1,9 @@
 var User = require('../models/User.js')
+const express = require('express')
+const lowerCase = require('lower-case')
 const router = express.Router()
+
+
 router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {
         User.authenticate(lowerCase(req.body.username), req.body.password, (err, user) => {
@@ -39,17 +43,13 @@ router.post('/verify', (req, res) => {
         console.log("username pass word exists")
         User.verify(req.body.token, req.body.password, lowerCase(req.body.username), (err, cb) => {
             if (err) {
-                console.log(err)
-            }
-            if (cb == true) {
-                res.send('success').status(200)
-            } else {
-                res.send('login failed')
-                console.log(cb)
+                res.send(err)
+            }else {
+                res.send(cb)
             }
         })
     } else {
-        res.send('login failed')
+        res.send("Username or password is missing")
     }
 })
 router.post('/reset', (req, res) => {

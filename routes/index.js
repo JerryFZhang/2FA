@@ -6,7 +6,6 @@ const request = require('request')
 const multer = require('multer')
 const User = require('../models/User.js')
 const _ = require('lodash')
-const lowerCase = require('lower-case')
 const fs = require('fs')
 var jwt = require('jsonwebtoken')
 var jwtSecret = 'bsud!32*(SAHGxna1)'

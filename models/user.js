@@ -54,10 +54,10 @@ UserSchema.statics.verify = function (token, password, username, callback) {
             console.log("Verify Token Response: ", tokenRes);
             if (tokenRes.success == true) {
                 req.session.authy = true;
-                return callback(true)
             }
+            return callback(tokenRes)
         });
-        return callback(false)
+        return callback(user)
     });
 };
 UserSchema.statics.sms = function (username, callback) {
@@ -66,7 +66,7 @@ UserSchema.statics.sms = function (username, callback) {
     }, function (err, user) {
         if (err || !user) {
             console.log('SendSMS', err);
-            return callback
+        return callback(err)
         }
         authy.requestSms({
             authyId: user.authyId
@@ -75,12 +75,12 @@ UserSchema.statics.sms = function (username, callback) {
         }, function (err, smsRes) {
             if (err) {
                 console.log('ERROR requestSms', err);
-                return err
+                return callback(err)
             }
             console.log("requestSMS response: ", smsRes);
-            if (smsRes.success == true) return true
+            return callback(smsRes)
         });
-        return false
+        return callback(user)
     });
 };
 UserSchema.statics.resetPassword = function (username, password, callback) {

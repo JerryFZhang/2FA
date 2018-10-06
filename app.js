@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const cons = require('consolidate')
 const index = require('./routes/index')
+const user = require('./routes/users')
 
 var serverConfig = require('./config.js').serverConfig
 const mongoose = require('mongoose')
@@ -36,6 +37,8 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', index)
+app.use('/user', user)
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
