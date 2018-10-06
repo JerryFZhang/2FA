@@ -14,14 +14,17 @@
 </head>
 
 <body class="text-center">
-    <form class="form-signin">
+        <div id = "error">
+
+            </div> 
+    <div class="form-signin">
         <h1 class="h3 mb-3 font-weight-normal">Please Input Your Pin Number and Password</h1>
         <label for="pin" class="sr-only">Pin Number</label>
         <input type="number" id="pin" class="form-control" placeholder="Pin Number" required autofocus> &nbsp;
         <label for="password" class="sr-only">Password</label>
         <input type="password" id="password" class="form-control" placeholder="Password" required autofocus> &nbsp;
         <button class="btn btn-lg btn-primary btn-block" id="submit">Sign in</button>
-    </form>
+    </div>
 </body>
 <script>
     $('#submit').click(function() {
@@ -35,9 +38,7 @@
             $(location).attr('href', '/logged-in');
         })
         .fail(function(data) {
-            <div class="alert alert-warning">
-  <strong>Error:</strong> + JSON.stringify(data)
-   </div>
+            $( "#error" ).append( '<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>' ); 
         })
     });
 
