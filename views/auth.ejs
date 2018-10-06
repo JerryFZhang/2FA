@@ -15,7 +15,7 @@
 
 <body class="text-center">
     <div class="form-signin">
-        <div id="error w-100"></div>
+        <div class="w-100" id="error"></div>
         <h1 class="h3 mb-3 font-weight-normal">Please Input Your SMS Code and Password</h1>
         <label for="pin" class="sr-only"></label>
         <input type="number" id="pin" class="form-control" placeholder="SMS Code" required autofocus> &nbsp;
@@ -25,24 +25,27 @@
     </div>
 </body>
 <script>
-    $('#submit').click(function () {
+    $('#submit').click(function() {
         var password = $("#password").val();
         var token = $("#pin").val();
         $.post('/user/verify', {
-            password: password
-            , token: token
-            , username: "123"
-        }).done(function (data) {
-            if(data.verified){
-               $(location).attr('href', '/logged-in');
+            password: password,
+            token: token,
+            username: "123"
+        }).done(function(data) {
+            console.log(data)
+            console.log(data.verified)
+
+            if (data.verified) {
+                $(location).attr('href', '/logged-in');
+            } else {
+                $("#error").append('<div class="alert alert-danger" role="alert"> <strong> Invaild Token or Password</strong>.</div>');
             }
-            else{
-                $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>');
-            }
-        }).fail(function (data) {
+        }).fail(function(data) {
             $("#error").append('<div class="alert alert-danger" role="alert"> <strong> ' + JSON.stringify(data) + '</strong>.</div>');
         })
     });
+
 </script>
 
 </html>
