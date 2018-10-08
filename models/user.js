@@ -66,7 +66,7 @@ UserSchema.statics.sms = function (username, callback) {
     }, function (err, user) {
         if (err || !user) {
             console.log('SendSMS', err);
-        return callback(err)
+        return callback(null, err)
         }
         authy.requestSms({
             authyId: user.authyId
