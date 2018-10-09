@@ -15,20 +15,20 @@
     "body-parser": "1.18.3",
     "consolidate": "0.15.1",
     "cookie-parser": "1.4.3",
-    "debug": "^3.1.0",
+    "debug": "^3.2.5",
     "ejs": "2.6.1",
     "express": "4.16.3",
-    "jsonwebtoken": "^8.2.2",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.11",
     "lower-case": "^1.1.4",
-    "mongoose": "^5.3.0",
+    "mongoose": "^5.3.2",
     "morgan": "^1.9.1",
     "multer": "^1.4.0",
     "nodemon": "1.17.5",
     "npm": "^6.2.0",
-    "request": "^2.87.0",
+    "request": "^2.88.0",
     "serve-favicon": "2.5.0",
     "swig": "1.4.2",
-    "twilio": "^3.20.0"
+    "twilio": "^3.22.0"
   }
 }
