@@ -10,15 +10,10 @@ router.post('/login', (req, res) => {
             if (err) {
                 console.log(err)
             }
-            if (err || !user) {
-                res.send('incorrect password')
+            if (!user) {
+                res.send('Incorrect password' + err)
             } else {
-                var token = grantAccess(user)
-                res.cookie('auth', token).json({
-                    success: true,
-                    message: 'loginSuccess',
-                    token: token
-                })
+                res.send('Verified')
             }
         })
     } else {
@@ -32,7 +27,7 @@ router.post('/token', (req, res) => {
             res.send(cb)
         })
     } else {
-        res.send('login failed')
+        res.send('Please enter a username.')
     }
 })
 router.post('/verify', (req, res) => {
