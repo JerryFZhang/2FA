@@ -2,7 +2,6 @@ var User = require('../models/User.js')
 const express = require('express')
 const lowerCase = require('lower-case')
 const router = express.Router()
-
 router.post('/login', (req, res) => {
     if (req.body.password) {
         User.authenticate(lowerCase('123'), req.body.password, (err, user) => {
@@ -57,5 +56,4 @@ router.post('/reset', (req, res) => {
         res.status("Missing Password or Username")
     }
 })
-
 module.exports = router
