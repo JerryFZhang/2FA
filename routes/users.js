@@ -3,7 +3,6 @@ const express = require('express')
 const lowerCase = require('lower-case')
 const router = express.Router()
 
-
 router.post('/login', (req, res) => {
     if (req.body.password) {
         User.authenticate(lowerCase('123'), req.body.password, (err, user) => {
@@ -41,9 +40,7 @@ router.post('/verify', (req, res) => {
     }
 })
 router.post('/reset', (req, res) => {
-    console.log(req.body)
-    var token = req.query.token
-    if (req.body.password) {
+    if (req.body.username && req.body.password) {
         User.resetPassword(req.query.username, req.body.password, (err) => {
             if (err) {
                 res.send(err)
@@ -57,36 +54,8 @@ router.post('/reset', (req, res) => {
             }
         })
     } else {
-        res.status(404)
+        res.status("Missing Password or Username")
     }
-})
-router.post('/sms', (req, res) => {
-    console.log(req.body)
-    var token = req.query.token
-    if (req.body.username) {
-        User.sendAuthyToken(req.query.username, (err) => {
-            // console.log("err")
-            if (err) {
-                console.log(err)
-            } else {
-                res.send('reset password success')
-            }
-        })
-    } else {
-        res.status(404)
-    }
-})
-// logout
-router.get('/logout', function (req, res, next) {
-    res.clearCookie('auth').send('logout success')
 })
 
-function grantAccess(user) {
-    const payload = {
-        username: user.email,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
-    }
-    var token = jwt.sign(payload, jwtSecret)
-    return token
-}
 module.exports = router
