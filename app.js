@@ -57,21 +57,21 @@ app.use(function (err, req, res, next) {
     res.send('err')
     console.log(err)
 })
-// https.createServer({
-//     key: privateKey,
-//     cert: certificate
-// }, app).listen(443)
+https.createServer({
+    key: privateKey,
+    cert: certificate
+}, app).listen(443)
 
 
 app.listen('3001', function () {
     console.log('App listening on port ' + 3001 + '!')
 })
 
-// http.createServer(function (req, res) {
-    // res.writeHead(301, {
-    //     "Location": "https://" + req.headers['host'] + req.url
-    // });
-    // res.end();
-// }).listen(80);
+http.createServer(function (req, res) {
+    res.writeHead(301, {
+        "Location": "https://" + req.headers['host'] + req.url
+    });
+    res.end();
+}).listen(80);
 
 module.exports = app

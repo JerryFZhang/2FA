@@ -104,6 +104,27 @@ UserSchema.statics.resetPassword = function (username, password, callback) {
         })
     })
 }
+UserSchema.statics.authenticate = function (username, password, callback) {
+    User.findOne({ username: username}, function (err, user) {
+      if (err) {
+        return callback(err)
+      } else if (!user) {
+        err = new Error('User not found.')
+        err.status = 401
+        return callback(err)
+      }
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (err) {
+          return callback(err)
+        }
+        if (result === true && user.status === 'ACTIVATED') {
+          return callback(null, user)
+        } else {
+          return callback()
+        }
+      })
+    })
+  }
 // hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
     var user = this
