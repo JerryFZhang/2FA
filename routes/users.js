@@ -5,8 +5,8 @@ const router = express.Router()
 
 
 router.post('/login', (req, res) => {
-    if (req.body.username && req.body.password) {
-        User.authenticate(lowerCase(req.body.username), req.body.password, (err, user) => {
+    if (req.body.password) {
+        User.authenticate(lowerCase('123'), req.body.password, (err, user) => {
             if (err) {
                 console.log(err)
             }
@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
             }
         })
     } else {
-        res.send('login failed')
+        res.send('Missing Password')
     }
 })
 router.post('/token', (req, res) => {
@@ -31,9 +31,9 @@ router.post('/token', (req, res) => {
     }
 })
 router.post('/verify', (req, res) => {
-    if (req.body.username && req.body.password) {
+    if (req.body.password) {
         console.log("username pass word exists")
-        User.verify(req.body.token, req.body.password, lowerCase(req.body.username), (err, cb) => {
+        User.verify(req.body.token, req.body.password, lowerCase("123"), (err, cb) => {
             if (err) res.send(err)
             res.send(cb)
         })
