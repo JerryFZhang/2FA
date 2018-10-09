@@ -31,14 +31,13 @@ router.post('/token', (req, res) => {
     }
 })
 router.post('/verify', (req, res) => {
-    if (req.body.password) {
-        console.log("username pass word exists")
-        User.verify(req.body.token, req.body.password, lowerCase("123"), (err, cb) => {
+    if (req.body.token) {
+        User.verify(req.body.token, lowerCase("123"), (err, cb) => {
             if (err) res.send(err)
             res.send(cb)
         })
     } else {
-        res.send("Username or password is missing")
+        res.send("SMS code is missing")
     }
 })
 router.post('/reset', (req, res) => {

@@ -34,9 +34,9 @@ var UserSchema = new mongoose.Schema({
         default: false,
     }
 })
-UserSchema.statics.verify = function (token, password, username, callback) {
+UserSchema.statics.verify = function (token, username, callback) {
     User.findOne({
-        username: "123"
+        username: username
     }).exec(function (err, user) {
         console.log("Verify Token");
         if (err) {
