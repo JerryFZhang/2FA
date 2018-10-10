@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const Schema = mongoose.Schema
 const Client = require('authy-client').Client;
 const authy = new Client({
     key: "h7GPkzc0gB5ao08jwGzVqzHeZcJPRMoo"
