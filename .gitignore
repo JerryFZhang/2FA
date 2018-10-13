@@ -62,3 +62,5 @@ typings/
 *.DS_Store
 Lab2/.vs/Lab2/v15/.suo
 Lab2/Lab2.sln
+domain-key.txt
+domain-crt.txt
